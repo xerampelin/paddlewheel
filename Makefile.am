@@ -13,7 +13,7 @@ paddlewheel_SOURCES = src/paddlewheel.cc
 
 TESTS =
 
-test_launch_SOURCES = tests/test_launch.cc
+test_launch_SOURCES = src/test_launch.cc
 test_launch_LDADD = $(libgtestmain) $(libgtest)
 test_launch_LDFLAGS = $(gtestldflags)
 test_launch_CPPFLAGS = -I$(gtestheaders)

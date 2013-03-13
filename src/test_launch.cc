@@ -6,3 +6,4 @@ TEST(SimpleTest, EnsureGtestWorks)
 {
     EXPECT_EQ(1, 1);
 }
+
