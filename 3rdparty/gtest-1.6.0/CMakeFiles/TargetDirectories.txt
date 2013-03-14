@@ -1,2 +1,0 @@
-/home/bren/src/paddlewheel/3rdparty/gtest-1.6.0/CMakeFiles/gtest.dir
-/home/bren/src/paddlewheel/3rdparty/gtest-1.6.0/CMakeFiles/gtest_main.dir
