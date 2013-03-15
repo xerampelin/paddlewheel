@@ -8,10 +8,12 @@ AM_CPPFLAGS =
 AM_CPPFLAGS += -I$(gtestheaders)
 AM_CPPFLAGS += -I$(gtestdir)
 
+LDADD =
+LDADD += -lboost_signals
+
 gtestdir = 3rdparty/gtest-1.6.0
 gtestheaders = $(gtestdir)/include/
-gtestldflags = -lpthread
-libgtest = libgtest.a
+libgtest = libgtest.a -lpthread
 libgtestmain= libgtest_main.a
 
 noinst_LIBRARIES = 
@@ -32,8 +34,7 @@ libgtest_main_a_SOURCES += $(gtestdir)/src/gtest_main.cc
 
 TESTS =
 
-test_launch_SOURCES = src/test_launch.cc
-test_launch_LDADD = $(libgtestmain) $(libgtest)
-test_launch_LDFLAGS = $(gtestldflags)
-TESTS += test_launch
+test_process_SOURCES = src/test_process.cc src/Process.cc
+test_process_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
+TESTS += test_process
 
