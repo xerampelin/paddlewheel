@@ -11,7 +11,7 @@ AM_CPPFLAGS += -I$(gtestdir)
 LDADD =
 LDADD += -lboost_signals
 
-gtestdir = 3rdparty/gtest-1.6.0
+gtestdir = $(srcdir)/3rdparty/gtest-1.6.0
 gtestheaders = $(gtestdir)/include/
 libgtest = libgtest.a -lpthread
 libgtestmain= libgtest_main.a
