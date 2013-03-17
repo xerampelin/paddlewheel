@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
 
 #include <gtest/gtest.h>
 #include <boost/signal.hpp>
@@ -7,11 +9,19 @@
 
 TEST(SimpleLaunch, SimpleLaunch)
 {
-    Process ls("ls");
+    Process echo("echo 'hi'");
+    EXPECT_STREQ("echo.log", echo.logName.c_str());
 
-    int pid = ls.run();
-    ls.wait();
+    /*
+    int pid = echo.run();
+    echo.wait();
         
-    EXPECT_EQ(pid, -1);
+    std::ifstream log(echo.getLogName());
+    EXPECT_TRUE(log);
+
+    std::string line;
+    log >> line;
+    EXPECT_STREQ(line, "hi");
+    */
 }
 

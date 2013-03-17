@@ -6,24 +6,37 @@
 #include <string>
 
 #include <boost/signal.hpp>
+#include <boost/algorithm/string.hpp>
 
 class Process
 {
+    typedef std::vector<std::string> VecStr;
 
-    int pid_;
-    int status_;
-    std::string const command_;
+    int pid;
+    int status;
+    VecStr const command;
+
+    static std::string generateLogName(VecStr const & cmd);
+    static VecStr toVecStr(std::string const & s)
+    {
+        VecStr vs;
+        boost::split(vs, s, ::isspace);
+        return vs;
+    }
 
     public:
-    boost::signal <void (int)> sigFinish;
+    std::string const logName;
 
-    Process(std::string const & command):
-        pid_(-1),
-        status_(-1),
-        command_(command) {}
+    Process(std::string const & cmd):
+        pid(-1),
+        status(-1),
+        command(toVecStr(cmd)),
+        logName(generateLogName(command)) {}
 
     pid_t run();
+
     pid_t wait();
+
 };
 
 #endif
