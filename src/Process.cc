@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "Process.h"
 
@@ -19,20 +20,17 @@ pid_t Process::run()
 {
     pid = fork();
     if (pid == 0) {
-        /* FIXME */
+        /* TODO use exec instead */
+        int rc = system(command.c_str());
+        /* TODO do something more useful with error case here. */
+        if (rc != 0) {
+            perror("system failed");
+        }
         exit(1);
     }
 }
 
 pid_t Process::wait()
 {
-}
-
-string Process::generateLogName(Process::VecStr const & command)
-{
-    /* TODO check for command length */
-    /* TODO change this to create a new file with appropriate extension if
-     * others already exist. */
-    return command[0] + ".log";
 }
 

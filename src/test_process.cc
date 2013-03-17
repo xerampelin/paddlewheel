@@ -7,21 +7,15 @@
 
 #include "Process.h"
 
-TEST(SimpleLaunch, SimpleLaunch)
+TEST(SimpleProcess, BasicCase)
 {
-    Process echo("echo 'hi'");
-    EXPECT_STREQ("echo.log", echo.logName.c_str());
-
-    /*
+    Process echo("echo 'Hello from test: SimpleProcess, BasicCase'");
     int pid = echo.run();
     echo.wait();
-        
-    std::ifstream log(echo.getLogName());
-    EXPECT_TRUE(log);
-
-    std::string line;
-    log >> line;
-    EXPECT_STREQ(line, "hi");
-    */
 }
 
+TEST(SimpleProcess, Empty)
+{
+    Process empty("");
+    empty.run();
+}
