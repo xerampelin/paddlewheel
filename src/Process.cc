@@ -32,5 +32,7 @@ pid_t Process::run()
 
 pid_t Process::wait()
 {
+    int status;
+    waitpid(pid, &status, 0);
 }
 

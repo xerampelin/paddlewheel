@@ -10,6 +10,8 @@ AM_CPPFLAGS += -I$(gtestdir)
 
 LDADD =
 LDADD += -lboost_signals
+LDADD += -lboost_system
+LDADD += -lboost_filesystem
 
 gtestdir = $(srcdir)/3rdparty/gtest-1.6.0
 gtestheaders = $(gtestdir)/include/
