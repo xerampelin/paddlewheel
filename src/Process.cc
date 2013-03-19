@@ -1,6 +1,10 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "Process.h"
 
@@ -18,8 +22,30 @@ using std::vector;
  */
 pid_t Process::run()
 {
+    if(command.length() == 0)
+        return -1;
+
+
     pid = fork();
     if (pid == 0) {
+        vector<string> argv;
+        boost::split(argv, command, ::isspace);
+
+        if (argv.size() > 0) {
+            string logFile = argv[0] + ".log";
+            
+            int permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+            int fd = open(logFile.c_str(),
+                          O_WRONLY | O_CREAT | O_TRUNC,
+                          permissions);
+            if (fd < 0) {
+                string msg = "Error opening " + logFile;
+                perror(msg.c_str());
+            }
+
+            dup2(STDOUT_FILENO, fd);
+        }
+
         /* TODO use exec instead */
         int rc = system(command.c_str());
         /* TODO do something more useful with error case here. */
@@ -28,6 +54,8 @@ pid_t Process::run()
         }
         exit(1);
     }
+
+    return pid;
 }
 
 pid_t Process::wait()

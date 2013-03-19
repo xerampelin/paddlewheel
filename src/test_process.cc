@@ -11,12 +11,12 @@
 
 TEST(SimpleProcess, BasicCase)
 {
-    unlink("basic-case-file");
-    Process touch("touch basic-case-file");
+    unlink("echo.log");
+    Process touch("echo 'hello world'");
     int pid = touch.run();
     EXPECT_TRUE(pid > 0);
     touch.wait();
-    EXPECT_TRUE(boost::filesystem::exists("basic-case-file"));
+    EXPECT_TRUE(boost::filesystem::exists("echo.log"));
 }
 
 TEST(SimpleProcess, Empty)
