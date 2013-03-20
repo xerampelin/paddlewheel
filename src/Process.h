@@ -14,6 +14,8 @@ class Process
     int status;
     std::string const command;
 
+    static void runChild(std::string const & command);
+
     public:
 
     Process(std::string const & cmd):

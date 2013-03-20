@@ -28,34 +28,44 @@ pid_t Process::run()
 
     pid = fork();
     if (pid == 0) {
-        vector<string> argv;
-        boost::split(argv, command, ::isspace);
-
-        if (argv.size() > 0) {
-            string logFile = argv[0] + ".log";
-            
-            int permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-            int fd = open(logFile.c_str(),
-                          O_WRONLY | O_CREAT | O_TRUNC,
-                          permissions);
-            if (fd < 0) {
-                string msg = "Error opening " + logFile;
-                perror(msg.c_str());
-            }
-
-            dup2(STDOUT_FILENO, fd);
-        }
-
-        /* TODO use exec instead */
-        int rc = system(command.c_str());
-        /* TODO do something more useful with error case here. */
-        if (rc != 0) {
-            perror("system failed");
-        }
-        exit(1);
+        runChild(command);
     }
 
     return pid;
+}
+
+void Process::runChild(std::string const & command)
+{
+    vector<string> argv;
+    /* TODO this is probably overkill for just finding the string up to the
+     * first space. */
+    boost::split(argv, command, ::isspace);
+
+    if (argv.size() < 0) {
+        exit(0);
+    }
+
+    string logFile = argv[0] + ".log";
+    
+    int permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+    int fd = open(logFile.c_str(),
+                  O_WRONLY | O_CREAT | O_TRUNC,
+                  permissions);
+    if (fd < 0) {
+        string msg = "Error opening " + logFile;
+        perror(msg.c_str());
+    }
+
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd, STDERR_FILENO);
+
+    int rc = system(command.c_str());
+    if (rc == -1) {
+        string msg = "Failed to execute " + command;
+        perror(msg.c_str());
+    }
+
+    exit(1);
 }
 
 pid_t Process::wait()

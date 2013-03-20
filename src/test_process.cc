@@ -12,11 +12,14 @@
 TEST(SimpleProcess, BasicCase)
 {
     unlink("echo.log");
-    Process touch("echo 'hello world'");
-    int pid = touch.run();
+    Process echo("echo 'hello world'");
+    int pid = echo.run();
     EXPECT_TRUE(pid > 0);
-    touch.wait();
-    EXPECT_TRUE(boost::filesystem::exists("echo.log"));
+    echo.wait();
+    std::ifstream in("echo.log");
+    std::string msg;
+    std::getline(in, msg, '\n');
+    EXPECT_STREQ("hello world", msg.c_str());
 }
 
 TEST(SimpleProcess, Empty)
