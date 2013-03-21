@@ -5,11 +5,21 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include "Process.h"
 
 using std::string;
 using std::vector;
+
+Process::Process(std::string const & cmd):
+    pid(-1),
+    status(-1),
+    command(cmd),
+    logFD(-1)
+{
+    initLog();
+}
 
 /* Process is a class that runs a single process.  We'll start by defining
  * the main thing people want to do with this class--run a process.
@@ -28,13 +38,13 @@ pid_t Process::run()
 
     pid = fork();
     if (pid == 0) {
-        runChild(command);
+        runChild(command, logFD);
     }
 
     return pid;
 }
 
-void Process::runChild(std::string const & command)
+void Process::initLog()
 {
     vector<string> argv;
     /* TODO this is probably overkill for just finding the string up to the
@@ -42,22 +52,37 @@ void Process::runChild(std::string const & command)
     boost::split(argv, command, ::isspace);
 
     if (argv.size() < 0) {
-        exit(0);
+        throw std::runtime_error("Could not find any commands in '"
+                                 + command + "'");
     }
 
-    string logFile = argv[0] + ".log";
+    logPath = argv[0] + ".log.XXXXXX";
+
+    /* FIXME Yay hacks!  We're modifying the buffer a string class holds without
+     * telling it.  But we're not changing the length of the string, so it'll be
+     * okay right?! right?!*/
+    int rc = mkstemp((char *)logPath.c_str());
+    if (rc == -1) {
+        string msg("Couldn't create log file: ");
+        msg += strerror(errno);
+        throw std::runtime_error(msg);
+    }
     
     int permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-    int fd = open(logFile.c_str(),
+    logFD = open(logPath.c_str(),
                   O_WRONLY | O_CREAT | O_TRUNC,
                   permissions);
-    if (fd < 0) {
-        string msg = "Error opening " + logFile;
-        perror(msg.c_str());
+    if (logFD < 0) {
+        string msg = "Error opening " + logPath;
+        throw std::runtime_error(msg);
     }
+}
 
-    dup2(fd, STDOUT_FILENO);
-    dup2(fd, STDERR_FILENO);
+void Process::runChild(std::string const & command, int logfd)
+{
+
+    dup2(logfd, STDOUT_FILENO);
+    dup2(logfd, STDERR_FILENO);
 
     int rc = system(command.c_str());
     if (rc == -1) {
@@ -65,6 +90,9 @@ void Process::runChild(std::string const & command)
         perror(msg.c_str());
     }
 
+    /* FIXME this could be confusing if a command fails and you get error code
+     * 1, is it from this exit call or did we actually execute a command and it
+     * returned 1 */
     exit(1);
 }
 
@@ -74,3 +102,7 @@ pid_t Process::wait()
     waitpid(pid, &status, 0);
 }
 
+std::string Process::getLogPath()
+{
+    return logPath;
+}

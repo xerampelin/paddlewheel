@@ -13,20 +13,18 @@ class Process
     int pid;
     int status;
     std::string const command;
+    std::string logPath;
+    int logFD;
+    void initLog();
 
-    static void runChild(std::string const & command);
+    static void runChild(std::string const & command, int logfd);
 
     public:
 
-    Process(std::string const & cmd):
-        pid(-1),
-        status(-1),
-        command(cmd)
-    {
-    }
-
+    Process(std::string const & cmd);
     pid_t run();
     pid_t wait();
+    std::string getLogPath();
 };
 
 #endif
