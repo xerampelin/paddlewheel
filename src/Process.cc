@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <sysexits.h>
 
 #include "Process.h"
 
@@ -32,10 +33,6 @@ Process::Process(std::string const & cmd):
  */
 pid_t Process::run()
 {
-    if(command.length() == 0)
-        return -1;
-
-
     pid = fork();
     if (pid == 0) {
         runChild(command, logFD);
@@ -81,28 +78,31 @@ void Process::initLog()
 void Process::runChild(std::string const & command, int logfd)
 {
 
-    dup2(logfd, STDOUT_FILENO);
-    dup2(logfd, STDERR_FILENO);
+    if (logfd >= 0) {
+        dup2(logfd, STDOUT_FILENO);
+        dup2(logfd, STDERR_FILENO);
+    }
 
     int rc = system(command.c_str());
     if (rc == -1) {
         string msg = "Failed to execute " + command;
         perror(msg.c_str());
+        exit(EX_OSERR);
     }
-
-    /* FIXME this could be confusing if a command fails and you get error code
-     * 1, is it from this exit call or did we actually execute a command and it
-     * returned 1 */
-    exit(1);
+    exit(rc);
 }
 
 pid_t Process::wait()
 {
-    int status;
     waitpid(pid, &status, 0);
 }
 
 std::string Process::getLogPath()
 {
     return logPath;
+}
+
+int Process::getStatus()
+{
+    return status;
 }

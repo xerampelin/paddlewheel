@@ -17,7 +17,7 @@ class Process
     int logFD;
     void initLog();
 
-    static void runChild(std::string const & command, int logfd);
+    static void runChild(std::string const & command, int logfd = -1);
 
     public:
 
@@ -25,6 +25,7 @@ class Process
     pid_t run();
     pid_t wait();
     std::string getLogPath();
+    int getStatus();
 };
 
 #endif
