@@ -3,6 +3,8 @@ bin_PROGRAMS = paddlewheel
 noinst_PROGRAMS = $(TESTS)
 
 paddlewheel_SOURCES = src/paddlewheel.cc
+paddlewheel_SOURCES += src/Process.cc
+paddlewheel_SOURCES += src/ProcessGroup.cc
 
 AM_CPPFLAGS =
 AM_CPPFLAGS += -I$(gtestheaders)
@@ -40,3 +42,8 @@ test_process_SOURCES = src/test_process.cc src/Process.cc
 test_process_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
 TESTS += test_process
 
+test_processgroup_SOURCES = src/test_processgroup.cc
+test_processgroup_SOURCES += src/ProcessGroup.cc
+test_processgroup_SOURCES += src/Process.cc
+test_processgroup_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
+TESTS += test_processgroup
