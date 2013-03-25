@@ -53,3 +53,13 @@ TEST(SimpleProcess, Failure)
     ASSERT_NE(EXIT_SUCCESS, badls.getExitStatus());
     unlink(badls.getLogPath().c_str());
 }
+
+TEST(SimpleProcess, NoopWait)
+{
+    Process ls("ls");
+    ASSERT_EQ(EXIT_SUCCESS, ls.getExitStatus());
+    ls.wait();
+    ls.wait();
+    ls.wait();
+    unlink(ls.getLogPath().c_str());
+}
