@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sysexits.h>
+#include <sstream>
 
 #include "Process.h"
 
@@ -15,11 +16,13 @@ using std::vector;
 
 Process::Process(std::string const & cmd):
     pid(-1),
-    status(-1),
+    exitStatus(-1),
     command(cmd),
-    logFD(-1)
+    logFD(-1),
+    state(COMMENCING)
 {
     initLog();
+    run();
 }
 
 /* Process is a class that runs a single process.  We'll start by defining
@@ -31,14 +34,19 @@ Process::Process(std::string const & cmd):
  * the way.  The child will call exec and never return, but just in case we'll
  * also exit with an error after exec'ing.
  */
-pid_t Process::run()
+void Process::run()
 {
+    state = STARTED;
     pid = fork();
+    if (pid < 0) {
+        string msg("Fork failed: ");
+        msg += strerror(errno);
+        throw std::runtime_error(msg);
+    }
+
     if (pid == 0) {
         runChild(command, logFD);
     }
-
-    return pid;
 }
 
 void Process::initLog()
@@ -77,24 +85,36 @@ void Process::initLog()
 
 void Process::runChild(std::string const & command, int logfd)
 {
+    char const * SHELL = "/bin/sh";
 
+    /* FIXME don't write both streams to the same file.. */
     if (logfd >= 0) {
         dup2(logfd, STDOUT_FILENO);
         dup2(logfd, STDERR_FILENO);
     }
 
-    int rc = system(command.c_str());
+    int rc = execlp("sh", "sh", "-c", command.c_str(), static_cast<char *>(0));
     if (rc == -1) {
         string msg = "Failed to execute " + command;
         perror(msg.c_str());
         exit(EX_OSERR);
     }
-    exit(rc);
+    exit(WEXITSTATUS(rc));
 }
 
-pid_t Process::wait()
+void Process::wait()
 {
-    waitpid(pid, &status, 0);
+    if (state == STARTED) {
+        int status;
+        int rc = waitpid(pid, &status, 0);
+        if (rc == -1) {
+            std::ostringstream msg;
+            msg << "Failed to wait on pid " << pid << ": " << strerror(errno);
+            throw std::runtime_error(msg.str());
+        }
+        state = FINISHED;
+        exitStatus = WEXITSTATUS(status);
+    }
 }
 
 std::string Process::getLogPath()
@@ -102,7 +122,16 @@ std::string Process::getLogPath()
     return logPath;
 }
 
-int Process::getStatus()
+int Process::getExitStatus()
 {
-    return status;
+    if (state != FINISHED) {
+        wait();
+    }
+
+    return exitStatus;
+}
+
+int Process::getPid()
+{
+    return pid;
 }

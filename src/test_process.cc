@@ -12,8 +12,7 @@
 
 std::string runWaitReadLine(Process & proc)
 {
-    int pid = proc.run();
-    EXPECT_TRUE(pid > 0);
+    EXPECT_TRUE(proc.getPid() > 0);
     proc.wait();
     std::ifstream in(proc.getLogPath().c_str());
     std::string msg;
@@ -25,8 +24,8 @@ TEST(SimpleProcess, BasicCase)
 {
     Process echo("echo 'hello world'");
     std::string msg(runWaitReadLine(echo));
-    EXPECT_STREQ("hello world", msg.c_str());
-    EXPECT_EQ(EXIT_SUCCESS, echo.getStatus());
+    ASSERT_STREQ("hello world", msg.c_str());
+    ASSERT_EQ(EXIT_SUCCESS, echo.getExitStatus());
     unlink(echo.getLogPath().c_str());
 }
 
@@ -34,8 +33,8 @@ void testEmptyish(std::string const & emptyish)
 {
     Process empty(emptyish.c_str());
     std::string output(runWaitReadLine(empty));
-    EXPECT_STREQ("", output.c_str());
-    EXPECT_EQ(EXIT_SUCCESS, empty.getStatus());
+    ASSERT_STREQ("", output.c_str());
+    ASSERT_EQ(EXIT_SUCCESS, empty.getExitStatus());
     unlink(empty.getLogPath().c_str());
 }
 
@@ -48,3 +47,9 @@ TEST(SimpleProcess, Empty)
     testEmptyish("\n                                     \t\t\t\t\t");
 }
 
+TEST(SimpleProcess, Failure)
+{
+    Process badls("ls /foobizzle/aamMre2/JJmmmsdr389/JJiqqxmow");
+    ASSERT_NE(EXIT_SUCCESS, badls.getExitStatus());
+    unlink(badls.getLogPath().c_str());
+}
