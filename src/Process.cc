@@ -117,7 +117,7 @@ void Process::wait()
     }
 }
 
-std::string Process::getLogPath()
+std::string Process::getLogPath() const
 {
     return logPath;
 }
@@ -131,7 +131,12 @@ int Process::getExitStatus()
     return exitStatus;
 }
 
-int Process::getPid()
+int Process::getPid() const
 {
     return pid;
+}
+
+Process::State Process::getState() const
+{
+    return state;
 }

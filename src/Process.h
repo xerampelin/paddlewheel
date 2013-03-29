@@ -10,6 +10,7 @@
 
 class Process
 {
+public:
     enum State
     {
         COMMENCING,
@@ -17,25 +18,27 @@ class Process
         FINISHED
     };
 
+private:
     int pid;
     int exitStatus;
     std::string const command;
     std::string logPath;
     int logFD;
-    State state;
+    Process::State state;
 
     void initLog();
     void run();
 
     static void runChild(std::string const & command, int logfd = -1);
 
-    public:
+public:
 
     Process(std::string const & cmd);
     void wait();
-    std::string getLogPath();
+    std::string getLogPath() const;
     int getExitStatus();
-    int getPid();
+    int getPid() const;
+    State getState() const;
 };
 
 #endif
