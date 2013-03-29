@@ -7,6 +7,7 @@ paddlewheel_SOURCES += src/Process.cc
 paddlewheel_SOURCES += src/ProcessGroup.cc
 
 AM_CPPFLAGS =
+AM_CPPFLAGS += -std=c++11
 AM_CPPFLAGS += -I$(gtestheaders)
 AM_CPPFLAGS += -I$(gtestdir)
 
