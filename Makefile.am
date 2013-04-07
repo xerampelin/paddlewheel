@@ -8,6 +8,7 @@ paddlewheel_SOURCES += src/ProcessGroup.cc
 
 AM_CPPFLAGS =
 AM_CPPFLAGS += -std=c++11
+AM_CPPFLAGS += $(GLIBMM_CFLAGS)
 AM_CPPFLAGS += -I$(gtestheaders)
 AM_CPPFLAGS += -I$(gtestdir)
 
@@ -15,6 +16,7 @@ LDADD =
 LDADD += -lboost_signals
 LDADD += -lboost_system
 LDADD += -lboost_filesystem
+LDADD += $(GLIBMM_LIBS)
 
 gtestdir = $(srcdir)/3rdparty/gtest-1.6.0
 gtestheaders = $(gtestdir)/include/

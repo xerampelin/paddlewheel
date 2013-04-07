@@ -6,7 +6,8 @@ AC_CONFIG_FILES([Makefile])
 #AC_CONFIG_SUBDIRS([3rdparty/gtest-1.6.0])
 AC_PROG_CXX
 AC_PROG_RANLIB
-AC_OUTPUT
+
+PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4 giomm-2.4])
 
 AC_LANG(C++)
 SAVED_LDFLAGS=$LDFLAGS
@@ -18,3 +19,5 @@ AC_LINK_IFELSE(
                                 [HAVE_BOOST_SIGNALS=1],
                                 [AC_MSG_WARN([libboost_signals is not installed.])])
 LDFLAGS=$SAVED_LDFLAGS
+
+AC_OUTPUT
