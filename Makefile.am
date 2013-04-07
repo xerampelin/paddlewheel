@@ -2,9 +2,12 @@ bin_PROGRAMS = paddlewheel
 
 noinst_PROGRAMS = $(TESTS)
 
+common_sources = src/Options.cc
+
 paddlewheel_SOURCES = src/paddlewheel.cc
 paddlewheel_SOURCES += src/Process.cc
 paddlewheel_SOURCES += src/ProcessGroup.cc
+paddlewheel_SOURCES += $(common_sources)
 
 AM_CPPFLAGS =
 AM_CPPFLAGS += -std=c++11
@@ -17,7 +20,6 @@ LDADD += -lboost_signals
 LDADD += -lboost_system
 LDADD += -lboost_filesystem
 LDADD += $(GLIBMM_LIBS)
-
 gtestdir = $(srcdir)/3rdparty/gtest-1.6.0
 gtestheaders = $(gtestdir)/include/
 libgtest = libgtest.a -lpthread
@@ -42,11 +44,13 @@ libgtest_main_a_SOURCES += $(gtestdir)/src/gtest_main.cc
 TESTS =
 
 test_process_SOURCES = src/test_process.cc src/Process.cc
+test_process_SOURCES += $(common_sources)
 test_process_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
 TESTS += test_process
 
 test_processgroup_SOURCES = src/test_processgroup.cc
 test_processgroup_SOURCES += src/ProcessGroup.cc
 test_processgroup_SOURCES += src/Process.cc
+test_processgroup_SOURCES += $(common_sources)
 test_processgroup_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
 TESTS += test_processgroup
