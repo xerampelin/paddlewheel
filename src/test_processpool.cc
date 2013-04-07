@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include "ProcessGroup.h"
+#include "ProcessPool.h"
 
-void cleanup(ProcessGroup & pg)
+void cleanup(ProcessPool & pg)
 {
     for (auto i = pg.begin(); i != pg.end(); ++i) {
         /* FIXME: kill the processes too */
@@ -12,9 +12,9 @@ void cleanup(ProcessGroup & pg)
     }
 }
 
-TEST(SimpleProcessGroup, basic)
+TEST(SimpleProcessPool, basic)
 {
-    ProcessGroup pg(2);
+    ProcessPool pg(2);
     pg.add("echo 'hi'");
     pg.add("touch foo");
     pg.waitAll();
@@ -28,9 +28,9 @@ TEST(SimpleProcessGroup, basic)
     cleanup(pg);
 }
 
-TEST(SimpleProcessGroup, concurrency)
+TEST(SimpleProcessPool, concurrency)
 {
-    ProcessGroup pg(2);
+    ProcessPool pg(2);
     pg.add("cat");
     pg.add("echo foo");
     pg[1]->wait();

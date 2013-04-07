@@ -1,13 +1,13 @@
-#include "ProcessGroup.h"
+#include "ProcessPool.h"
 #include "Process.h"
 
-ProcessGroup::ProcessGroup(int maxProcesses):
+ProcessPool::ProcessPool(int maxProcesses):
     runningProcs(0),
     maxProcs(maxProcesses)
 {
 }
 
-void ProcessGroup::add(std::string command)
+void ProcessPool::add(std::string command)
 {
     commands.push_back(command);
 
@@ -16,7 +16,7 @@ void ProcessGroup::add(std::string command)
     }
 }
 
-void ProcessGroup::run()
+void ProcessPool::run()
 {
     std::shared_ptr<Process> p(new Process(commands.front()));
     processes.push_back(p);
@@ -24,7 +24,7 @@ void ProcessGroup::run()
     commands.pop_front();
 }
 
-void ProcessGroup::waitAll()
+void ProcessPool::waitAll()
 {
     for (auto i = processes.begin(); i != processes.end(); ++i) {
         if ((*i)->getState() == Process::STARTED) {

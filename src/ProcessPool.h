@@ -8,7 +8,7 @@
 
 #include "Process.h"
 
-class ProcessGroup
+class ProcessPool
 {
     typedef std::vector<std::shared_ptr<Process> > ProcVector;
     typedef ProcVector::iterator iterator;
@@ -21,7 +21,7 @@ class ProcessGroup
     void run();
 
     public:
-        ProcessGroup(int maxProcesses);
+        ProcessPool(int maxProcesses);
         void add(std::string command);
         std::shared_ptr<Process> operator[](int index)
         {

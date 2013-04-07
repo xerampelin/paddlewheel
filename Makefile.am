@@ -6,7 +6,7 @@ common_sources = src/Options.cc
 
 paddlewheel_SOURCES = src/paddlewheel.cc
 paddlewheel_SOURCES += src/Process.cc
-paddlewheel_SOURCES += src/ProcessGroup.cc
+paddlewheel_SOURCES += src/ProcessPool.cc
 paddlewheel_SOURCES += $(common_sources)
 
 AM_CPPFLAGS =
@@ -48,9 +48,9 @@ test_process_SOURCES += $(common_sources)
 test_process_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
 TESTS += test_process
 
-test_processgroup_SOURCES = src/test_processgroup.cc
-test_processgroup_SOURCES += src/ProcessGroup.cc
-test_processgroup_SOURCES += src/Process.cc
-test_processgroup_SOURCES += $(common_sources)
-test_processgroup_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
-TESTS += test_processgroup
+test_processpool_SOURCES = src/test_processpool.cc
+test_processpool_SOURCES += src/ProcessPool.cc
+test_processpool_SOURCES += src/Process.cc
+test_processpool_SOURCES += $(common_sources)
+test_processpool_LDADD = $(libgtestmain) $(libgtest) $(LDADD)
+TESTS += test_processpool
