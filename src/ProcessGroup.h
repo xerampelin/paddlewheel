@@ -4,20 +4,21 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <vector>
 
 #include "Process.h"
 
 class ProcessGroup
 {
     typedef std::vector<std::shared_ptr<Process> > ProcVector;
+    typedef ProcVector::iterator iterator;
+
     int runningProcs;
     int maxProcs;
     ProcVector processes;
     std::list<std::string> commands;
 
     void run();
-    /* FIXME add test for copying */
-    Process & operator=(Process & p) {}
 
     public:
         ProcessGroup(int maxProcesses);
@@ -27,6 +28,18 @@ class ProcessGroup
             return processes[index];
         }
         void waitAll();
+        /* TODO may consider making this class extend a vector instead of
+         * reimplementing a bunch of the same methods.. */
+        iterator begin()
+        {
+            return processes.begin();
+        }
+        
+        iterator end()
+        {
+            return processes.end();
+        }
+
 };
 
 #endif // #if _PROCESS_GROUP_H_

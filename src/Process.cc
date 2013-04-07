@@ -9,6 +9,8 @@
 #include <sysexits.h>
 #include <sstream>
 
+#include <glib.h>
+
 #include "Process.h"
 
 using std::string;
@@ -23,6 +25,14 @@ Process::Process(std::string const & cmd):
 {
     initLog();
     run();
+}
+
+Process::~Process()
+{
+    try {
+        stop();
+    } catch (...) {
+    }
 }
 
 /* Process is a class that runs a single process.  We'll start by defining
@@ -47,6 +57,7 @@ void Process::run()
     if (pid == 0) {
         runChild(command, logFD);
     }
+    g_message("Started process %d ==> %s", pid, command.c_str());
 }
 
 void Process::initLog()
@@ -106,6 +117,7 @@ void Process::wait()
 {
     if (state == STARTED) {
         int status;
+        g_message("Waiting for %d", pid);
         int rc = waitpid(pid, &status, 0);
         if (rc == -1) {
             std::ostringstream msg;
@@ -114,6 +126,7 @@ void Process::wait()
         }
         state = FINISHED;
         exitStatus = WEXITSTATUS(status);
+        g_message("Finished waiting for %d", pid);
     }
 }
 
@@ -139,4 +152,19 @@ int Process::getPid() const
 Process::State Process::getState() const
 {
     return state;
+}
+
+void Process::stop()
+{
+    if(state == STARTED) {
+        wait();
+    }
+    if (logFD != -1) {
+        close(logFD);
+    }
+}
+
+int Process::kill(int signal)
+{
+    return ::kill(pid, signal);
 }
