@@ -9,6 +9,8 @@
 #include <sysexits.h>
 #include <sstream>
 
+#include <boost/algorithm/string.hpp>
+
 #include <glib.h>
 
 #include "Process.h"

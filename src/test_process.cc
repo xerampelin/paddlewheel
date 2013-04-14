@@ -5,8 +5,6 @@
 #include <sysexits.h>
 
 #include <gtest/gtest.h>
-#include <boost/signal.hpp>
-#include <boost/filesystem.hpp>
 
 #include "Process.h"
 
