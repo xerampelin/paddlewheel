@@ -20,8 +20,10 @@ class ProcessPool
 
     void run();
 
+    ProcessPool & operator=(ProcessPool) = delete;
+
     public:
-        ProcessPool(int maxProcesses);
+        ProcessPool(int maxProcesses = 2);
         void add(std::string command);
         std::shared_ptr<Process> operator[](int index)
         {
