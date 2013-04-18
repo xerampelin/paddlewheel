@@ -9,7 +9,7 @@ AC_LANG(C++)
 
 PKG_CHECK_MODULES([GLIBMM], [glibmm-2.4 giomm-2.4])
 
-AC_CHECK_HEADER([boost/filesystem.hpp], [],
-                [AC_MSG_ERROR([Couldn't find boost/filesystem.hpp])])
+AC_CHECK_HEADER([boost/algorithm/string.hpp], [],
+                [AC_MSG_ERROR([Couldn't find boost/algorithm/string.hpp])])
 
 AC_OUTPUT

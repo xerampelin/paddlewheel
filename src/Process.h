@@ -6,9 +6,6 @@
 #include <string>
 #include <signal.h>
 
-#include <boost/signal.hpp>
-#include <boost/algorithm/string.hpp>
-
 class Process
 {
 public:
