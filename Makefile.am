@@ -14,6 +14,7 @@ AM_CPPFLAGS += -std=c++11
 AM_CPPFLAGS += $(GLIBMM_CFLAGS)
 AM_CPPFLAGS += -I$(gtestheaders)
 AM_CPPFLAGS += -I$(gtestdir)
+AM_CPPFLAGS += -DTEST_DATA_DIR=\"$(srcdir)/src/test-data\"
 
 LDADD =
 LDADD += -lboost_signals
@@ -40,6 +41,7 @@ libgtest_a_SOURCES += $(gtestdir)/src/gtest-typed-test.cc
 
 libgtest_main_a_SOURCES = $(libgtest_a_SOURCES)
 libgtest_main_a_SOURCES += $(gtestdir)/src/gtest_main.cc
+
 
 TESTS =
 
